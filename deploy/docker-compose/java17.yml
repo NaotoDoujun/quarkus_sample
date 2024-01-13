@@ -48,8 +48,11 @@ services:
   ui-frontend-jvm:
     image: docker.io/quarkus/ui-frontend-jvm:latest
     container_name: uifrontend-jvm
+    depends_on:
+      - rest-backend-jvm
     ports:
       - 8080:8080
     restart: "no"
     environment:
       API_BASE_URL: http://localhost:8082
+      QUARKUS_QUINOA_INDEX_PAGE: quinoa.html

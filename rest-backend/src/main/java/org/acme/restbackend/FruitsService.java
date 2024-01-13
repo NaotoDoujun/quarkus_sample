@@ -14,6 +14,9 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface FruitsService {
 
     @GET
+    Set<Fruit> getAll();
+
+    @GET
     CompletionStage<Set<Fruit>> getAllAsync();
 
 }

@@ -1,5 +1,15 @@
-# misc
-.DS_Store
+# Local environment
 .env
+
+# Plugin directory
+/.quarkus/cli/plugins/
+
+# OSX
+.DS_Store
+
+# VS CODE
+.vscode
+*.code-workspace
+.factorypath
 
 *.secrets

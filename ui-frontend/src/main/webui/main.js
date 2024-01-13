@@ -1,22 +1,25 @@
-import theaterJS from 'theaterjs';
+import $ from 'jquery';
 
-const theater = theaterJS();
+$(function(){
+    
+    const defaultHeaders = {'Content-Type': "application/json"};
+    let basePath = window?.APP_CONFIG?.API_BASE_URL;
 
-theater
-    .on('type:start, erase:start', function() { theater.getCurrentActor().$element.classList.add('actor-content--typing');})
-    .on('type:end, erase:end', function() {theater.getCurrentActor().$element.classList.remove('actor-content--typing');});
+    if (!basePath) {
+      basePath = window.location.protocol + "//" + window.location.host;
+    }
 
-theater
-    .addActor('Quarkus', { speed: 1, accuracy: 0.7 })
-    .addActor('Me', { speed: 0.9, accuracy: 0.8 })
-    .addScene('Quarkus:Toc toc.', 1000)
-    .addScene('Me:What?', 500)
-    .addScene('Quarkus:You will eat Quinoa today!', 200)
-    .addScene('Me:Nooo...', -3, '!!! ', 150, 'No! ', 150)
-    .addScene('Me:Yuk! That\'s impossible!', 100)
-    .addScene('Quarkus:It is time!', 100)
-    .addScene('Quarkus:With your training and this power,', 100)
-    .addScene('Quarkus:You will create awesome web apps.', 100)
-    .addScene('Quarkus:It is your destiny!', 200)
-    .addScene('Quarkus:Meet Quarkus UI with NO hAssle!', 200)
-    .addScene('Me:Neat!', 200)
+    $.ajax({
+        url: basePath + '/fruits',
+        headers: defaultHeaders,
+        dataType: "json",
+    }).then(function(data) {
+        console.log(data);
+        let data_stringify = JSON.stringify(data);
+        let data_json = JSON.parse(data_stringify);
+        $.each(data_json, function(index, value) {
+            console.log(value);
+            $('.scene').append('<div>'+ value.id + ':' + value.name + '</div>');
+        })
+    });
+});

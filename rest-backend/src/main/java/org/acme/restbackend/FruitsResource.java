@@ -14,6 +14,12 @@ public class FruitsResource {
     FruitsService fruitsService;
 
     @GET
+    public Set<Fruit> all() {
+        return fruitsService.getAll();
+    }
+    
+    @GET
+    @Path("/all-async")
     public CompletionStage<Set<Fruit>> allAsync() {
         return fruitsService.getAllAsync();
     }
