@@ -1,0 +1,40 @@
+FROM ubuntu:18.04
+
+# Software versions
+ARG GRAAL_VERSION
+ARG JDK_VERSION
+ARG QUARKUS_VERSION
+# dirs
+ARG WORK_DIR
+ARG GRAALVM_HOME
+
+RUN set -xeu && \
+    export DEBIAN_FRONTEND=noninteractive
+RUN echo "root:password" | chpasswd
+
+RUN apt-get update -y && \
+    apt-get install -y wget zip unzip vim git ca-certificates curl && \
+    apt-get install -y build-essential lsb-core && \
+    apt-get autoremove -y && apt-get clean
+
+# graalvm download
+RUN mkdir ${GRAALVM_HOME} && \
+    wget --no-check-certificate --no-cookies -O - "https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAAL_VERSION}/graalvm-ce-${JDK_VERSION}-linux-amd64-${GRAAL_VERSION}.tar.gz" | \
+    tar -zxC ${GRAALVM_HOME} --strip-components=1 && \
+    install --mode 0644 /dev/stdin /etc/profile.d/graal-on-path.sh
+
+# graalvm env
+ENV PATH $PATH:${GRAALVM_HOME}/bin
+
+# graalvm install
+RUN wget -P ${WORK_DIR} --no-check-certificate --no-cookies "https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAAL_VERSION}/native-image-installable-svm-${JDK_VERSION}-linux-amd64-${GRAAL_VERSION}.jar"
+RUN ${GRAALVM_HOME}/bin/gu install -L "${WORK_DIR}/native-image-installable-svm-${JDK_VERSION}-linux-amd64-${GRAAL_VERSION}.jar"
+
+# Quarkus CLI
+RUN mkdir /opt/quarkus && \
+    wget --no-check-certificate --no-cookies -O - "https://github.com/quarkusio/quarkus/releases/download/${QUARKUS_VERSION}.Final/quarkus-cli-${QUARKUS_VERSION}.Final.tar.gz" | \
+    tar -zxC ${WORK_DIR} && \
+    mv -fu ${WORK_DIR}/quarkus-cli-${QUARKUS_VERSION}.Final/* /opt/quarkus
+ENV PATH $PATH:/opt/quarkus/bin
+
+CMD ["/bin/sh"]

@@ -1,0 +1,91 @@
+version: '3.6'
+
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    hostname: postgres
+    privileged: true
+    env_file: .env
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    ports: 
+      - 5432:5432
+    restart: unless-stopped
+
+  rest-db:
+    container_name: restdb
+    hostname: restdb
+    depends_on:
+      - postgres
+    tty: true
+    privileged: true
+    env_file: .env
+    build:
+      context: .devcontainer/docker
+      dockerfile: dockerfile
+      args:
+        GRAAL_VERSION: 22.3.1
+        JDK_VERSION: java19
+        QUARKUS_VERSION: 3.2.9
+        WORK_DIR: /tmp
+        GRAALVM_HOME: /opt/graalvm
+    volumes:
+      - .:/app:cached
+      - graalvm_volume:/opt/graalvm
+      - quarkus_volume:/opt/quarkus
+    restart: "no"
+
+  rest-backend:
+    container_name: restbackend
+    hostname: restbackend
+    depends_on:
+      - rest-db
+    tty: true
+    privileged: true
+    env_file: .env
+    build:
+      context: .devcontainer/docker
+      dockerfile: dockerfile
+      args:
+        GRAAL_VERSION: 22.3.1
+        JDK_VERSION: java19
+        QUARKUS_VERSION: 3.2.9
+        WORK_DIR: /tmp
+        GRAALVM_HOME: /opt/graalvm
+    volumes:
+      - .:/app:cached
+      - graalvm_volume:/opt/graalvm
+      - quarkus_volume:/opt/quarkus
+    restart: "no"
+
+  ui-frontend:
+    container_name: uifrontend
+    hostname: uifrontend
+    depends_on:
+      - rest-backend
+    tty: true
+    privileged: true
+    env_file: .env
+    build:
+      context: .devcontainer/docker
+      dockerfile: dockerfile
+      args:
+        GRAAL_VERSION: 22.3.1
+        JDK_VERSION: java19
+        QUARKUS_VERSION: 3.2.9
+        WORK_DIR: /tmp
+        GRAALVM_HOME: /opt/graalvm
+    volumes:
+      - .:/app:cached
+      - graalvm_volume:/opt/graalvm
+      - quarkus_volume:/opt/quarkus
+    restart: "no"
+
+volumes:
+  graalvm_volume:
+    driver: local
+  quarkus_volume:
+    driver: local
+  postgres_volume:
+    driver: local

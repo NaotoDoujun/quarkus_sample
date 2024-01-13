@@ -1,0 +1,14 @@
+# versions
+GRAAL_VERSION=22.3.1
+JDK_VERSION=java19
+QUARKUS_VERSION=3.2.9
+
+# dirs
+WORK_DIR=/tmp
+
+# java
+JAVA_HOME=/opt/graalvm
+GRAALVM_HOME=${JAVA_HOME}
+
+# postgres
+POSTGRES_PASSWORD=postgres
