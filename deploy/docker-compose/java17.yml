@@ -1,0 +1,55 @@
+version: '3.6'
+
+services:
+  db-local:
+    image: postgres
+    container_name: db-local
+    privileged: true
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports: 
+      - 5432:5432
+    volumes:
+      - ../db_init/initialize-database.js:/docker-entrypoint-initdb.d/1-init-db.js
+    restart: unless-stopped
+
+  rest-db-jvm:
+    image: docker.io/quarkus/rest-db-jvm:latest
+    container_name: restdb-jvm
+    depends_on:
+      - db-local
+    ports:
+      - 8081:8081
+    environment:
+      QUARKUS_DATASOURCE_REACTIVE_URL: vertx-reactive:postgresql://db-local:5432/postgres
+      QUARKUS_DATASOURCE_USERNAME: postgres
+      QUARKUS_DATASOURCE_PASSWORD: postgres
+    restart: "no"
+    networks:
+      default:
+        aliases:
+          - rest-db-jvm
+
+  rest-backend-jvm:
+    image: docker.io/quarkus/rest-backend-jvm:latest
+    container_name: restbackend-jvm
+    ports:
+      - 8082:8082
+    environment:
+      QUARKUS_REST-CLIENT_RESTDB-API_URL: http://rest-db-jvm:8081
+    restart: "no"
+    networks:
+      default:
+        aliases:
+          - rest-backend-jvm
+
+  ui-frontend-jvm:
+    image: docker.io/quarkus/ui-frontend-jvm:latest
+    container_name: uifrontend-jvm
+    ports:
+      - 8080:8080
+    restart: "no"
+    environment:
+      API_BASE_URL: http://localhost:8082
