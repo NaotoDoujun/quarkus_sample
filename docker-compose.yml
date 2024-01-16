@@ -25,11 +25,11 @@ services:
       context: .devcontainer/docker
       dockerfile: dockerfile
       args:
-        GRAAL_VERSION: 22.3.1
-        JDK_VERSION: java19
-        QUARKUS_VERSION: 3.2.9
-        WORK_DIR: /tmp
-        GRAALVM_HOME: /opt/graalvm
+        - GRAAL_VERSION=${GRAAL_VERSION}
+        - JDK_VERSION=${JDK_VERSION}
+        - QUARKUS_VERSION=${QUARKUS_VERSION}
+        - WORK_DIR=${WORK_DIR}
+        - GRAALVM_HOME=${GRAALVM_HOME}
     volumes:
       - .:/app:cached
       - graalvm_volume:/opt/graalvm
@@ -46,11 +46,11 @@ services:
       context: .devcontainer/docker
       dockerfile: dockerfile
       args:
-        GRAAL_VERSION: 22.3.1
-        JDK_VERSION: java19
-        QUARKUS_VERSION: 3.2.9
-        WORK_DIR: /tmp
-        GRAALVM_HOME: /opt/graalvm
+        - GRAAL_VERSION=${GRAAL_VERSION}
+        - JDK_VERSION=${JDK_VERSION}
+        - QUARKUS_VERSION=${QUARKUS_VERSION}
+        - WORK_DIR=${WORK_DIR}
+        - GRAALVM_HOME=${GRAALVM_HOME}
     volumes:
       - .:/app:cached
       - graalvm_volume:/opt/graalvm
@@ -67,11 +67,32 @@ services:
       context: .devcontainer/docker
       dockerfile: dockerfile
       args:
-        GRAAL_VERSION: 22.3.1
-        JDK_VERSION: java19
-        QUARKUS_VERSION: 3.2.9
-        WORK_DIR: /tmp
-        GRAALVM_HOME: /opt/graalvm
+        - GRAAL_VERSION=${GRAAL_VERSION}
+        - JDK_VERSION=${JDK_VERSION}
+        - QUARKUS_VERSION=${QUARKUS_VERSION}
+        - WORK_DIR=${WORK_DIR}
+        - GRAALVM_HOME=${GRAALVM_HOME}
+    volumes:
+      - .:/app:cached
+      - graalvm_volume:/opt/graalvm
+      - quarkus_volume:/opt/quarkus
+    restart: "no"
+
+  ui-springboot:
+    container_name: uispringboot
+    hostname: uispringboot
+    tty: true
+    privileged: true
+    env_file: .env
+    build:
+      context: .devcontainer/docker
+      dockerfile: dockerfile
+      args:
+        - GRAAL_VERSION=${GRAAL_VERSION}
+        - JDK_VERSION=${JDK_VERSION}
+        - QUARKUS_VERSION=${QUARKUS_VERSION}
+        - WORK_DIR=${WORK_DIR}
+        - GRAALVM_HOME=${GRAALVM_HOME}
     volumes:
       - .:/app:cached
       - graalvm_volume:/opt/graalvm

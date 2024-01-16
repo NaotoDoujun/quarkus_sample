@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" >
+    <title>Title</title>
+</head>
+<body>
+    <h1>Hello Thymeleaf View!!!</h1>
+    <p id="p1">abc</p>
+    <button type="button" id="b1" class="btn btn-primary">Btn Primary</button>
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+	<script>
+		$("#b1").click(function () {
+			$("#p1").html("<b>def</b>");
+		});
+	</script>
+</body>
+</html>
