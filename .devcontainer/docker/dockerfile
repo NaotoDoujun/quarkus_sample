@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 # Software versions
 ARG GRAAL_VERSION
@@ -13,6 +13,7 @@ RUN set -xeu && \
 RUN echo "root:password" | chpasswd
 
 RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && \
     apt-get install -y wget zip unzip vim git ca-certificates curl && \
     apt-get install -y build-essential lsb-core && \
     apt-get autoremove -y && apt-get clean

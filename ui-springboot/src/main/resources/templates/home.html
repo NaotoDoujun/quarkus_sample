@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
     <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" >
-    <title>Title</title>
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <title>Thymeleaf View</title>
 </head>
 <body>
-    <h1>Hello Thymeleaf View!!!</h1>
-    <p id="p1">abc</p>
-    <button type="button" id="b1" class="btn btn-primary">Btn Primary</button>
-    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
-	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
-	<script>
-		$("#b1").click(function () {
-			$("#p1").html("<b>def</b>");
-		});
-	</script>
+    <main class="scene">
+    </main>
+    <script th:inline="javascript">
+		  window.API_BASE_URL = /*[[${apiBaseUrl}]]*/"apiBaseUrl";
+    </script>
+    <script th:src="@{/main.js}"></script>
 </body>
 </html>

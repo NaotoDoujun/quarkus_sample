@@ -56,3 +56,14 @@ services:
     environment:
       API_BASE_URL: http://localhost:8082
       QUARKUS_QUINOA_INDEX_PAGE: quinoa.html
+
+  ui-springboot-jvm:
+    image: docker.io/springboot/ui-springboot-jvm:latest
+    container_name: uispringboot-jvm
+    depends_on:
+      - rest-backend-jvm
+    ports:
+      - 8085:8080
+    restart: "no"
+    environment:
+      API_BASE_URL: http://localhost:8082
