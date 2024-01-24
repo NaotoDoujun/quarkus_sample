@@ -1,0 +1,25 @@
+server:
+  port: 8080
+  address: 0.0.0.0
+
+api:
+  base:
+    url: http://localhost:8082
+
+spring:
+  profiles:
+    active: dev
+  security:
+    saml2:
+      relyingparty:
+        registration:
+          auth0:
+            assertingparty:
+              metadata-uri: https://dev-i7btdyfxq64m44re.us.auth0.com/samlp/metadata/dGTb7mv3Z1VAttIb1uJSx5qoRPaaw4nA
+            signing:
+              credentials:
+                - private-key-location: classpath:credentials/local.key
+                  certificate-location: classpath:credentials/local.crt
+            singlelogout:
+              binding: POST
+              response-url: "{baseUrl}/logout/saml2/slo"
