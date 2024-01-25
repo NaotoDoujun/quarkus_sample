@@ -26,5 +26,5 @@ Logs are like this.
 Auth screen.  
 ![Auth Screen](images/auth_screen.png "auth_screen.png")
 
-After Signed in, You can see Principal one home.  
+After Signed in, You can see Principal on home.  
 ![Home Screen](images/home_screen.png "home_screen.png")
