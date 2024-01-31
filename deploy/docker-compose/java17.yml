@@ -23,9 +23,12 @@ services:
     ports:
       - 8081:8081
     environment:
+      QUARKUS_LOG_HANDLER_GELF_HOST: graylog
+      QUARKUS_LOG_HANDLER_GELF_PORT: 12201
       QUARKUS_DATASOURCE_REACTIVE_URL: vertx-reactive:postgresql://db-local:5432/postgres
       QUARKUS_DATASOURCE_USERNAME: postgres
       QUARKUS_DATASOURCE_PASSWORD: postgres
+      QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4317
     restart: "no"
     networks:
       default:
@@ -38,24 +41,28 @@ services:
     ports:
       - 8082:8082
     environment:
+      QUARKUS_LOG_HANDLER_GELF_HOST: graylog
+      QUARKUS_LOG_HANDLER_GELF_PORT: 12201
       QUARKUS_REST-CLIENT_RESTDB-API_URL: http://rest-db-jvm:8081
+      QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4317
     restart: "no"
     networks:
       default:
         aliases:
           - rest-backend-jvm
 
-  ui-frontend-jvm:
-    image: docker.io/quarkus/ui-frontend-jvm:latest
-    container_name: uifrontend-jvm
-    depends_on:
-      - rest-backend-jvm
-    ports:
-      - 8080:8080
-    restart: "no"
-    environment:
-      API_BASE_URL: http://localhost:8082
-      QUARKUS_QUINOA_INDEX_PAGE: quinoa.html
+  # ui-frontend-jvm:
+  #   image: docker.io/quarkus/ui-frontend-jvm:latest
+  #   container_name: uifrontend-jvm
+  #   depends_on:
+  #     - rest-backend-jvm
+  #   ports:
+  #     - 8080:8080
+  #   restart: "no"
+  #   environment:
+  #     API_BASE_URL: http://localhost:8082
+  #     QUARKUS_QUINOA_INDEX_PAGE: quinoa.html
+  #     QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4317
 
   ui-springboot-jvm:
     image: docker.io/springboot/ui-springboot-jvm:latest

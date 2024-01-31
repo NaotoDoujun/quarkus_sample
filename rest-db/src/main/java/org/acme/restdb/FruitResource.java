@@ -40,17 +40,20 @@ public class FruitResource {
 
     @GET
     public Uni<List<Fruit>> get() {
+        LOGGER.info("get() called.");
         return Fruit.listAll(Sort.by("name"));
     }
 
     @GET
     @Path("{id}")
     public Uni<Fruit> getSingle(Long id) {
+        LOGGER.info("getSingle(id) called.");
         return Fruit.findById(id);
     }
 
     @POST
     public Uni<Response> create(Fruit fruit) {
+        LOGGER.info("create(fruit) called.");
         if (fruit == null || fruit.id != null) {
             throw new WebApplicationException("Id was invalidly set on request.", 422);
         }
@@ -62,6 +65,7 @@ public class FruitResource {
     @PUT
     @Path("{id}")
     public Uni<Response> update(Long id, Fruit fruit) {
+        LOGGER.info("update(id, fruit) called.");
         if (fruit == null || fruit.name == null) {
             throw new WebApplicationException("Fruit name was not set on request.", 422);
         }
@@ -77,6 +81,7 @@ public class FruitResource {
     @DELETE
     @Path("{id}")
     public Uni<Response> delete(Long id) {
+        LOGGER.info("delete(id) called.");
         return Panache.withTransaction(() -> Fruit.deleteById(id))
                 .map(deleted -> deleted
                         ? Response.ok().status(NO_CONTENT).build()

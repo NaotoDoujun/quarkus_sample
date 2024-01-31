@@ -1,0 +1,91 @@
+version: '3.6'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+    container_name: elasticsearch
+    ports:
+      - 9200:9200
+    environment:
+        - http.host=0.0.0.0
+        - transport.host=localhost
+        - network.host=0.0.0.0
+        - "ES_JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true -Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - elasticsearch_volume:/usr/share/elasticsearch/data
+    restart: "on-failure"
+      
+  mongodb:
+    image: mongo:5.0
+    container_name: mongodb
+    volumes:
+      - mongodb_volume:/data/db
+    restart: "on-failure"
+
+  graylog:
+    image: graylog/graylog:4.2
+    container_name: graylog
+    ports:
+      - 9000:9000 # Graylog UI
+      - 12201:12201/udp # GELF UDP
+    environment:
+      GRAYLOG_NODE_ID_FILE: "/usr/share/graylog/data/config/node-id"
+      GRAYLOG_PASSWORD_SECRET: somepasswordpepper
+      GRAYLOG_ROOT_PASSWORD_SHA2: 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+      GRAYLOG_HTTP_BIND_ADDRESS: "0.0.0.0:9000"
+      GRAYLOG_HTTP_EXTERNAL_URI: "http://localhost:9000/"
+      GRAYLOG_ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+      GRAYLOG_MONGODB_URI: "mongodb://mongodb:27017/graylog"
+    entrypoint: /usr/bin/tini -- wait-for-it elasticsearch:9200 -- /docker-entrypoint.sh
+    volumes:
+      - graylog_volume:/usr/share/graylog/data
+    depends_on:
+      - elasticsearch
+      - mongodb
+
+  prometheus:
+    image: prom/prometheus:v2.45.3
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ../../deploy/docker-compose/monitoring/prometheus_scrape_configs.yml:/etc/prometheus/prometheus.yml
+
+  jaeger:
+    image: jaegertracing/all-in-one:1
+    container_name: jaeger
+    ports:
+      - 16686:16686 # Jaeger UI
+      - 14268       # Accept thrift spans
+      - 14250       # Accept gRPC spans
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.75.0
+    container_name: otel-collector
+    command:
+      - "--config=/conf/otel-collector-config.yml"
+    volumes:
+      - ../../deploy/docker-compose/monitoring/otel-collector-config.yml:/conf/otel-collector-config.yml
+    ports:
+      - 13133:13133 # health_check extension
+      - 4317:4317   # OTLP gRPC receiver
+    depends_on:
+      - jaeger
+
+volumes:
+  mongodb_volume:
+    driver: local
+  elasticsearch_volume:
+    driver: local
+  graylog_volume:
+    driver: local
+  
