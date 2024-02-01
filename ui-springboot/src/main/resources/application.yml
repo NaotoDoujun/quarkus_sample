@@ -7,6 +7,8 @@ api:
     url: http://localhost:8082
 
 spring:
+  application:
+    name: ui-springboot
   profiles:
     active: dev
   security:
@@ -23,3 +25,14 @@ spring:
             singlelogout:
               binding: POST
               response-url: "{baseUrl}/logout/saml2/slo"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  metrics:
+    tags:
+      app: ${spring.application.name}
+      application: ${spring.application.name}
+      system: quarkus-sample

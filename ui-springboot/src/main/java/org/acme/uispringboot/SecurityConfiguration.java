@@ -28,6 +28,7 @@ public class SecurityConfiguration {
         authenticationProvider.setResponseAuthenticationConverter(groupsConverter());
 
         http.authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated())
             .saml2Login(saml2 -> saml2
                 .authenticationManager(new ProviderManager(authenticationProvider)))

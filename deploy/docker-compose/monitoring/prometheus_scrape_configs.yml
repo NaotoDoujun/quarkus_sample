@@ -27,3 +27,13 @@ scrape_configs:
           app: rest-backend
           application: backend-service
           system: quarkus-sample
+
+  - job_name: 'ui-springboot'
+    metrics_path: /actuator/prometheus
+    honor_labels: true
+    static_configs:
+      - targets: ['ui-springboot-jvm:8080']
+        labels:
+          app: ui-springboot
+          application: ui-springboot
+          system: quarkus-sample
