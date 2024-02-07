@@ -1,6 +1,6 @@
 # quarkus_sample
 
-## image build
+## JVM image build
 ex: rest-backend
 ```
 # on dev container
@@ -15,7 +15,7 @@ docker build -f src/main/docker/Dockerfile.jvm -t quarkus/rest-backend-jvm .
 After build each images, run below command at project root directory.
 | Description | Image Tag       | Docker Compose Run Command                                               | Docker Compose Run Command with Monitoring                                                                       |
 |-------------|-----------------|--------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
-| JVM Java 17 | `java17-latest` | `docker compose -f deploy/docker-compose/java17.yml up --remove-orphans` | `docker compose -f deploy/docker-compose/java17.yml -f deploy/docker-compose/monitoring.yml up --remove-orphans` |
+| JVM Java 17 | `java17-latest` | `docker-compose -f deploy/docker-compose/java17.yml up --remove-orphans` | `docker-compose -f deploy/docker-compose/java17.yml -f deploy/docker-compose/monitoring.yml up --remove-orphans` |
 
 ## Monitoring
 - [Prometheus](https://prometheus.io/)

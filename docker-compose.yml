@@ -25,14 +25,10 @@ services:
       context: .devcontainer/docker
       dockerfile: dockerfile
       args:
-        - GRAAL_VERSION=${GRAAL_VERSION}
-        - JDK_VERSION=${JDK_VERSION}
         - QUARKUS_VERSION=${QUARKUS_VERSION}
         - WORK_DIR=${WORK_DIR}
-        - GRAALVM_HOME=${GRAALVM_HOME}
     volumes:
       - .:/app:cached
-      - graalvm_volume:/opt/graalvm
       - quarkus_volume:/opt/quarkus
     restart: "no"
 
@@ -46,14 +42,10 @@ services:
       context: .devcontainer/docker
       dockerfile: dockerfile
       args:
-        - GRAAL_VERSION=${GRAAL_VERSION}
-        - JDK_VERSION=${JDK_VERSION}
         - QUARKUS_VERSION=${QUARKUS_VERSION}
         - WORK_DIR=${WORK_DIR}
-        - GRAALVM_HOME=${GRAALVM_HOME}
     volumes:
       - .:/app:cached
-      - graalvm_volume:/opt/graalvm
       - quarkus_volume:/opt/quarkus
     restart: "no"
 
@@ -67,14 +59,10 @@ services:
       context: .devcontainer/docker
       dockerfile: dockerfile
       args:
-        - GRAAL_VERSION=${GRAAL_VERSION}
-        - JDK_VERSION=${JDK_VERSION}
         - QUARKUS_VERSION=${QUARKUS_VERSION}
         - WORK_DIR=${WORK_DIR}
-        - GRAALVM_HOME=${GRAALVM_HOME}
     volumes:
       - .:/app:cached
-      - graalvm_volume:/opt/graalvm
       - quarkus_volume:/opt/quarkus
     restart: "no"
 
@@ -88,20 +76,14 @@ services:
       context: .devcontainer/docker
       dockerfile: dockerfile
       args:
-        - GRAAL_VERSION=${GRAAL_VERSION}
-        - JDK_VERSION=${JDK_VERSION}
         - QUARKUS_VERSION=${QUARKUS_VERSION}
         - WORK_DIR=${WORK_DIR}
-        - GRAALVM_HOME=${GRAALVM_HOME}
     volumes:
       - .:/app:cached
-      - graalvm_volume:/opt/graalvm
       - quarkus_volume:/opt/quarkus
     restart: "no"
 
 volumes:
-  graalvm_volume:
-    driver: local
   quarkus_volume:
     driver: local
   postgres_volume:
