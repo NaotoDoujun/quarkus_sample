@@ -15,6 +15,39 @@ services:
       - ../db_init/initialize-database.js:/docker-entrypoint-initdb.d/1-init-db.js
     restart: unless-stopped
 
+  gitlab-local:
+    image: gitlab/gitlab-ce
+    container_name: gitlab-local
+    privileged: true
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://localhost:8000'
+        registry_external_url 'http://localhost:5050'
+        gitlab_rails['registry_enabled'] = true
+        gitlab_rails['time_zone'] = "Asia/Tokyo"
+        gitlab_rails['initial_root_password'] = "P@ssw0rd"
+        nginx['listen_port'] = 8000
+        mattermost['enable'] = false
+        prometheus['enable'] = false
+        alertmanager['enable'] = false
+        node_exporter['enable'] = false
+        redis_exporter['enable'] = false
+        postgres_exporter['enable'] = false
+        gitlab_exporter['enable'] = false
+        grafana['enable'] = false
+    volumes:
+      - gitlab-local_config:/etc/gitlab
+      - gitlab-local_logs:/var/log/gitlab
+      - gitlab-local_data:/var/opt/gitlab
+    logging:
+      options:
+        max-size: "4M"
+        max-file: "14"
+    ports:
+      - 8000:8000
+      - 5050:5050
+    restart: unless-stopped
+
   rest-db-jvm:
     image: docker.io/quarkus/rest-db-jvm:latest
     container_name: restdb-jvm
@@ -35,11 +68,28 @@ services:
         aliases:
           - rest-db-jvm
 
+  # rest-git-jvm:
+  #   image: docker.io/quarkus/rest-git-jvm:latest
+  #   container_name: restgit-jvm
+  #   ports:
+  #     - 8082:8082
+  #   environment:
+  #     QUARKUS_LOG_HANDLER_GELF_HOST: graylog
+  #     QUARKUS_LOG_HANDLER_GELF_PORT: 12201
+  #     QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4317
+  #   restart: "no"
+  #   volumes:
+  #     - rest_git_volume:/var/git
+  #   networks:
+  #     default:
+  #       aliases:
+  #         - rest-git-jvm
+
   rest-backend-jvm:
     image: docker.io/quarkus/rest-backend-jvm:latest
     container_name: restbackend-jvm
     ports:
-      - 8082:8082
+      - 8083:8083
     environment:
       QUARKUS_LOG_HANDLER_GELF_HOST: graylog
       QUARKUS_LOG_HANDLER_GELF_PORT: 12201
@@ -51,18 +101,18 @@ services:
         aliases:
           - rest-backend-jvm
 
-  # ui-frontend-jvm:
-  #   image: docker.io/quarkus/ui-frontend-jvm:latest
-  #   container_name: uifrontend-jvm
-  #   depends_on:
-  #     - rest-backend-jvm
-  #   ports:
-  #     - 8080:8080
-  #   restart: "no"
-  #   environment:
-  #     API_BASE_URL: http://localhost:8082
-  #     QUARKUS_QUINOA_INDEX_PAGE: quinoa.html
-  #     QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4317
+  ui-frontend-jvm:
+    image: docker.io/quarkus/ui-frontend-jvm:latest
+    container_name: uifrontend-jvm
+    depends_on:
+      - rest-backend-jvm
+    ports:
+      - 8080:8080
+    restart: "no"
+    environment:
+      API_BASE_URL: http://localhost:8083
+      QUARKUS_QUINOA_INDEX_PAGE: quinoa.html
+      QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4317
 
   ui-springboot-jvm:
     image: docker.io/springboot/ui-springboot-jvm:latest
@@ -70,7 +120,17 @@ services:
     depends_on:
       - rest-backend-jvm
     ports:
-      - 8085:8080
+      - 8085:8085
     restart: "no"
     environment:
-      API_BASE_URL: http://localhost:8082
+      API_BASE_URL: http://localhost:8083
+
+volumes:
+  gitlab-local_config:
+    driver: local
+  gitlab-local_logs:
+    driver: local
+  gitlab-local_data:
+    driver: local
+  rest_git_volume:
+    driver: local

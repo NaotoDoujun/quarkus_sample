@@ -32,6 +32,24 @@ services:
       - quarkus_volume:/opt/quarkus
     restart: "no"
 
+  rest-git:
+    container_name: restgit
+    hostname: restgit
+    tty: true
+    privileged: true
+    env_file: .env
+    build:
+      context: .devcontainer/docker
+      dockerfile: dockerfile
+      args:
+        - QUARKUS_VERSION=${QUARKUS_VERSION}
+        - WORK_DIR=${WORK_DIR}
+    volumes:
+      - .:/app:cached
+      - restgit_volume:/var/git
+      - quarkus_volume:/opt/quarkus
+    restart: "no"
+
   rest-backend:
     container_name: restbackend
     hostname: restbackend
@@ -84,6 +102,8 @@ services:
     restart: "no"
 
 volumes:
+  restgit_volume:
+    driver: local
   quarkus_volume:
     driver: local
   postgres_volume:
