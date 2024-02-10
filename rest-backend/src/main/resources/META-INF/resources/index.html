@@ -256,14 +256,49 @@
                     <p>Static assets: <code>src/main/resources/META-INF/resources/</code></p>
                     <p>Code: <code>src/main/java</code></p>
                     <p>Generated starter code:</p>
-                    <ul class="provided-code">
-                                <li class="provided-code">
-            <b>RESTEasy Reactive</b>&nbsp;Easily start your Reactive RESTful Web Services
-            <br />&rsaquo; <code>@Path: <a href="/fruits" class="path-link" target="_blank">/fruits</a></code>
-            <br />&rsaquo; <a href="https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources" class="guide-link" target="_blank">Related guide</a>
-        </li>
-
-                    </ul>
+                    <h3>Upload Form</h3>
+                    <form id="upform" enctype="multipart/form-data">
+                        <input type="file" name="file" size="50" />
+                        <button id="upButton" type="button">Upload It</button>
+                    </form>
+                    <h3>Commit</h3>
+                    <form id="commitform">
+                        <input type="text" name="message" />
+                        <button id="commitButton" type="button">Commit</button>
+                    </form>
+                    <script src="//code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+                    <script>
+                        $("#upButton").on('click', function () {
+                            console.log("upButton clicked.");
+                            let data = new FormData($("#upform").get(0));
+                            $.ajax({
+                                url:'git',
+                                data: data,
+                                cache: false,
+                                contentType: false,
+                                processData: false,
+                                method: 'POST',
+                                success: function(data){
+                                    console.log(data);
+                                }
+                            });
+                        });
+                        $("#commitButton").on('click', function () {
+                            console.log("commitButton clicked.");
+                            let data = new FormData($("#commitform").get(0));
+                            $.ajax({
+                                url:'git/commit',
+                                data: data,
+                                cache: false,
+                                contentType: false,
+                                processData: false,
+                                method: 'POST',
+                                success: function(data){
+                                    console.log(data);
+                                }
+                            });
+                        });
+                    </script>
                 </div>
                 <div class="right-column">
                     <h3>Selected extensions</h3>

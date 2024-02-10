@@ -14,8 +14,8 @@ services:
     restart: unless-stopped
 
   rest-db:
-    container_name: restdb
-    hostname: restdb
+    container_name: rest-db
+    hostname: rest-db
     depends_on:
       - postgres
     tty: true
@@ -33,8 +33,8 @@ services:
     restart: "no"
 
   rest-git:
-    container_name: restgit
-    hostname: restgit
+    container_name: rest-git
+    hostname: rest-git
     tty: true
     privileged: true
     env_file: .env
@@ -51,8 +51,8 @@ services:
     restart: "no"
 
   rest-backend:
-    container_name: restbackend
-    hostname: restbackend
+    container_name: rest-backend
+    hostname: rest-backend
     tty: true
     privileged: true
     env_file: .env
@@ -68,8 +68,8 @@ services:
     restart: "no"
 
   ui-frontend:
-    container_name: uifrontend
-    hostname: uifrontend
+    container_name: ui-frontend
+    hostname: ui-frontend
     tty: true
     privileged: true
     env_file: .env
@@ -85,8 +85,8 @@ services:
     restart: "no"
 
   ui-springboot:
-    container_name: uispringboot
-    hostname: uispringboot
+    container_name: ui-springboot
+    hostname: ui-springboot
     tty: true
     privileged: true
     env_file: .env
