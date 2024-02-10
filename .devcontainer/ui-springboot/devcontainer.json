@@ -11,6 +11,7 @@
 	"workspaceFolder": "/app/ui-springboot",
 	"shutdownAction": "stopCompose",
 	"postCreateCommand": "echo 'Container creation completed.'",
+	"postAttachCommand": "microdnf module reset nodejs && microdnf -y module enable nodejs:18 && microdnf install -y --setopt=tsflags=nodocs --setopt=install_weak_deps=0 npm",
 	// "image": "mcr.microsoft.com/devcontainers/java:1-21-bullseye",
 
 	// "features": {
