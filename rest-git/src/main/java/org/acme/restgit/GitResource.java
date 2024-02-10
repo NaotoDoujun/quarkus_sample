@@ -50,6 +50,7 @@ public class GitResource {
         initializeRepository();
     }
 
+    @SuppressWarnings("null")
     @POST
     public Response add(@RestForm String description, @RestForm("file") FileUpload file) throws IOException {
         if (Objects.nonNull(git)) {

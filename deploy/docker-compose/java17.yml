@@ -1,19 +1,19 @@
 version: '3.6'
 
 services:
-  # db-local:
-  #   image: postgres
-  #   container_name: db-local
-  #   privileged: true
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: postgres
-  #     POSTGRES_DB: postgres
-  #   ports: 
-  #     - 5432:5432
-  #   volumes:
-  #     - ../db_init/initialize-database.js:/docker-entrypoint-initdb.d/1-init-db.js
-  #   restart: unless-stopped
+  db-local:
+    image: postgres
+    container_name: db-local
+    privileged: true
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports: 
+      - 5432:5432
+    volumes:
+      - ../db_init/initialize-database.js:/docker-entrypoint-initdb.d/1-init-db.js
+    restart: unless-stopped
 
   gitlab-local:
     image: gitlab/gitlab-ce:16.8.2-ce.0
@@ -50,25 +50,25 @@ services:
       - 5050:5050
     restart: unless-stopped
 
-  # rest-db-jvm:
-  #   image: docker.io/quarkus/rest-db-jvm:latest
-  #   container_name: rest-db-jvm
-  #   depends_on:
-  #     - db-local
-  #   ports:
-  #     - 8081:8081
-  #   environment:
-  #     QUARKUS_LOG_HANDLER_GELF_HOST: graylog
-  #     QUARKUS_LOG_HANDLER_GELF_PORT: 12201
-  #     QUARKUS_DATASOURCE_REACTIVE_URL: vertx-reactive:postgresql://db-local:5432/postgres
-  #     QUARKUS_DATASOURCE_USERNAME: postgres
-  #     QUARKUS_DATASOURCE_PASSWORD: postgres
-  #     QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4317
-  #   restart: "no"
-  #   networks:
-  #     default:
-  #       aliases:
-  #         - rest-db-jvm
+  rest-db-jvm:
+    image: docker.io/quarkus/rest-db-jvm:latest
+    container_name: rest-db-jvm
+    depends_on:
+      - db-local
+    ports:
+      - 8081:8081
+    environment:
+      QUARKUS_LOG_HANDLER_GELF_HOST: graylog
+      QUARKUS_LOG_HANDLER_GELF_PORT: 12201
+      QUARKUS_DATASOURCE_REACTIVE_URL: vertx-reactive:postgresql://db-local:5432/postgres
+      QUARKUS_DATASOURCE_USERNAME: postgres
+      QUARKUS_DATASOURCE_PASSWORD: postgres
+      QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4317
+    restart: "no"
+    networks:
+      default:
+        aliases:
+          - rest-db-jvm
 
   rest-git-jvm:
     image: docker.io/quarkus/rest-git-jvm:latest
@@ -106,30 +106,30 @@ services:
         aliases:
           - rest-backend-jvm
 
-  # ui-frontend-jvm:
-  #   image: docker.io/quarkus/ui-frontend-jvm:latest
-  #   container_name: ui-frontend-jvm
-  #   depends_on:
-  #     - rest-backend-jvm
-  #   ports:
-  #     - 8080:8080
-  #   restart: "no"
-  #   environment:
-  #     API_BASE_URL: http://localhost:8083
-  #     QUARKUS_QUINOA_INDEX_PAGE: quinoa.html
-  #     QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4317
+  ui-frontend-jvm:
+    image: docker.io/quarkus/ui-frontend-jvm:latest
+    container_name: ui-frontend-jvm
+    depends_on:
+      - rest-backend-jvm
+    ports:
+      - 8080:8080
+    restart: "no"
+    environment:
+      API_BASE_URL: http://localhost:8083
+      QUARKUS_QUINOA_INDEX_PAGE: quinoa.html
+      QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4317
 
-  # ui-springboot-jvm:
-  #   image: docker.io/springboot/ui-springboot-jvm:latest
-  #   container_name: ui-springboot-jvm
-  #   hostname: ui-springboot
-  #   depends_on:
-  #     - rest-backend-jvm
-  #   ports:
-  #     - 8085:8085
-  #   restart: "no"
-  #   environment:
-  #     API_BASE_URL: http://localhost:8083
+  ui-springboot-jvm:
+    image: docker.io/springboot/ui-springboot-jvm:latest
+    container_name: ui-springboot-jvm
+    hostname: ui-springboot
+    depends_on:
+      - rest-backend-jvm
+    ports:
+      - 8085:8085
+    restart: "no"
+    environment:
+      API_BASE_URL: http://localhost:8083
 
 volumes:
   gitlab-local_config:
