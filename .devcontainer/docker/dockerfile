@@ -7,13 +7,13 @@ ARG WORK_DIR
 RUN set -xeu
 RUN echo "root:password" | chpasswd
 
-RUN microdnf install -y wget zip unzip vim git curl
+RUN microdnf install -y wget zip unzip vim git curl iputils
 
 # Quarkus CLI
 RUN mkdir /opt/quarkus && \
-    wget --no-check-certificate --no-cookies -O - "https://github.com/quarkusio/quarkus/releases/download/${QUARKUS_VERSION}.Final/quarkus-cli-${QUARKUS_VERSION}.Final.tar.gz" | \
+    wget --no-check-certificate --no-cookies -O - "https://github.com/quarkusio/quarkus/releases/download/${QUARKUS_VERSION}/quarkus-cli-${QUARKUS_VERSION}.tar.gz" | \
     tar -zxC ${WORK_DIR} && \
-    mv -fu ${WORK_DIR}/quarkus-cli-${QUARKUS_VERSION}.Final/* /opt/quarkus
+    mv -fu ${WORK_DIR}/quarkus-cli-${QUARKUS_VERSION}/* /opt/quarkus
 ENV PATH $PATH:/opt/quarkus/bin
 
 ENTRYPOINT ["/bin/sh"]

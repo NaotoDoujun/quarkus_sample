@@ -1,5 +1,5 @@
 # versions
-QUARKUS_VERSION=3.2.9
+QUARKUS_VERSION=3.7.2
 
 # dirs
 WORK_DIR=/tmp
