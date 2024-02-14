@@ -32,6 +32,23 @@ services:
       - quarkus_volume:/opt/quarkus
     restart: "no"
 
+  springboot-db:
+    container_name: springboot-db
+    hostname: springboot-db
+    tty: true
+    privileged: true
+    env_file: .env
+    build:
+      context: .devcontainer/docker
+      dockerfile: dockerfile
+      args:
+        - QUARKUS_VERSION=${QUARKUS_VERSION}
+        - WORK_DIR=${WORK_DIR}
+    volumes:
+      - .:/app:cached
+      - quarkus_volume:/opt/quarkus
+    restart: "no"
+
   rest-git:
     container_name: rest-git
     hostname: rest-git

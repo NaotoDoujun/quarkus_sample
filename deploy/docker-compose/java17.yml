@@ -70,6 +70,23 @@ services:
         aliases:
           - rest-db-jvm
 
+  springboot-db-jvm:
+    image: docker.io/springboot/springboot-db-jvm:latest
+    container_name: springboot-db-jvm
+    depends_on:
+      - db-local
+    ports:
+      - 8086:8086
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-local:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    restart: "no"
+    networks:
+      default:
+        aliases:
+          - springboot-db-jvm
+
   rest-git-jvm:
     image: docker.io/quarkus/rest-git-jvm:latest
     container_name: rest-git-jvm
