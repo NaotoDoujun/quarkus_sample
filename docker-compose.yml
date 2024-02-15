@@ -3,7 +3,7 @@ version: '3.6'
 services:
   postgres:
     image: postgres
-    container_name: postgres
+    container_name: postgres-for-quarkus
     hostname: postgres
     privileged: true
     env_file: .env
@@ -14,7 +14,7 @@ services:
     restart: unless-stopped
 
   rest-db:
-    container_name: rest-db
+    container_name: quarkus-rest-db
     hostname: rest-db
     depends_on:
       - postgres
@@ -29,28 +29,10 @@ services:
         - WORK_DIR=${WORK_DIR}
     volumes:
       - .:/app:cached
-      - quarkus_volume:/opt/quarkus
-    restart: "no"
-
-  springboot-db:
-    container_name: springboot-db
-    hostname: springboot-db
-    tty: true
-    privileged: true
-    env_file: .env
-    build:
-      context: .devcontainer/docker
-      dockerfile: dockerfile
-      args:
-        - QUARKUS_VERSION=${QUARKUS_VERSION}
-        - WORK_DIR=${WORK_DIR}
-    volumes:
-      - .:/app:cached
-      - quarkus_volume:/opt/quarkus
     restart: "no"
 
   rest-git:
-    container_name: rest-git
+    container_name: quarkus-rest-git
     hostname: rest-git
     tty: true
     privileged: true
@@ -64,11 +46,10 @@ services:
     volumes:
       - .:/app:cached
       - restgit_volume:/var/git
-      - quarkus_volume:/opt/quarkus
     restart: "no"
 
   rest-backend:
-    container_name: rest-backend
+    container_name: quarkus-rest-backend
     hostname: rest-backend
     tty: true
     privileged: true
@@ -81,11 +62,10 @@ services:
         - WORK_DIR=${WORK_DIR}
     volumes:
       - .:/app:cached
-      - quarkus_volume:/opt/quarkus
     restart: "no"
 
   ui-frontend:
-    container_name: ui-frontend
+    container_name: quarkus-ui-frontend
     hostname: ui-frontend
     tty: true
     privileged: true
@@ -98,30 +78,10 @@ services:
         - WORK_DIR=${WORK_DIR}
     volumes:
       - .:/app:cached
-      - quarkus_volume:/opt/quarkus
-    restart: "no"
-
-  ui-springboot:
-    container_name: ui-springboot
-    hostname: ui-springboot
-    tty: true
-    privileged: true
-    env_file: .env
-    build:
-      context: .devcontainer/docker
-      dockerfile: dockerfile
-      args:
-        - QUARKUS_VERSION=${QUARKUS_VERSION}
-        - WORK_DIR=${WORK_DIR}
-    volumes:
-      - .:/app:cached
-      - quarkus_volume:/opt/quarkus
     restart: "no"
 
 volumes:
   restgit_volume:
-    driver: local
-  quarkus_volume:
     driver: local
   postgres_volume:
     driver: local

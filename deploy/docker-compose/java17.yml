@@ -3,7 +3,7 @@ version: '3.6'
 services:
   db-local:
     image: postgres
-    container_name: db-local
+    container_name: db-local-for-quarkus
     privileged: true
     environment:
       POSTGRES_USER: postgres
@@ -17,7 +17,7 @@ services:
 
   gitlab-local:
     image: gitlab/gitlab-ce:16.8.2-ce.0
-    container_name: gitlab-local
+    container_name: gitlab-local-for-quarkus
     privileged: true
     environment:
       GITLAB_OMNIBUS_CONFIG: |
@@ -52,7 +52,7 @@ services:
 
   rest-db-jvm:
     image: docker.io/quarkus/rest-db-jvm:latest
-    container_name: rest-db-jvm
+    container_name: quarkus-rest-db-jvm
     depends_on:
       - db-local
     ports:
@@ -70,26 +70,9 @@ services:
         aliases:
           - rest-db-jvm
 
-  springboot-db-jvm:
-    image: docker.io/springboot/springboot-db-jvm:latest
-    container_name: springboot-db-jvm
-    depends_on:
-      - db-local
-    ports:
-      - 8086:8086
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db-local:5432/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-    restart: "no"
-    networks:
-      default:
-        aliases:
-          - springboot-db-jvm
-
   rest-git-jvm:
     image: docker.io/quarkus/rest-git-jvm:latest
-    container_name: rest-git-jvm
+    container_name: quarkus-rest-git-jvm
     ports:
       - 8082:8082
     environment:
@@ -108,7 +91,7 @@ services:
 
   rest-backend-jvm:
     image: docker.io/quarkus/rest-backend-jvm:latest
-    container_name: rest-backend-jvm
+    container_name: quarkus-rest-backend-jvm
     ports:
       - 8083:8083
     environment:
@@ -125,7 +108,7 @@ services:
 
   ui-frontend-jvm:
     image: docker.io/quarkus/ui-frontend-jvm:latest
-    container_name: ui-frontend-jvm
+    container_name: quarkus-ui-frontend-jvm
     depends_on:
       - rest-backend-jvm
     ports:
@@ -135,18 +118,6 @@ services:
       API_BASE_URL: http://localhost:8083
       QUARKUS_QUINOA_INDEX_PAGE: quinoa.html
       QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4317
-
-  ui-springboot-jvm:
-    image: docker.io/springboot/ui-springboot-jvm:latest
-    container_name: ui-springboot-jvm
-    hostname: ui-springboot
-    depends_on:
-      - rest-backend-jvm
-    ports:
-      - 8085:8085
-    restart: "no"
-    environment:
-      API_BASE_URL: http://localhost:8083
 
 volumes:
   gitlab-local_config:
